@@ -1,0 +1,31 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:latest
+    container_name: pomelo_dev_nginx
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../nginx:/etc/nginx/conf.d
+      - ../../.collect_static:/static
+    depends_on:
+      - web
+  web:
+    build: ../../
+    container_name: pomelo_dev_web
+    # command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn mydjango.wsgi -b 0.0.0.0:8000"
+    command: ["./entrypoint.sh"]
+    depends_on:
+      - db
+    volumes:
+      - ../../.collect_static:/static
+    expose:
+      - "8000"
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: dev_test
+      MYSQL_DATABASE: aquas_db
+      MYSQL_USER: developer
+      MYSQL_PASSWORD: developer_password
+    container_name: pomelo_dev_db

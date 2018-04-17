@@ -52,6 +52,24 @@ class DeviceConnections(models.Model):
 class SprinkleSchedule(models.Model):
     device = models.ForeignKey('Device', on_delete=models.CASCADE)
 
+    hour = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(23)])
+    minute = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(59)])
+    AM = 'am'
+    PM = 'pm'
+    am_pm_choices = (
+        (AM, AM),
+        (PM, PM)
+    )
+    am_pm = models.CharField(max_length=15, choices=am_pm_choices, default=AM)
+
+    on_monday = models.BooleanField(default=False)
+    on_tuesday = models.BooleanField(default=False)
+    on_wednesday = models.BooleanField(default=False)
+    on_thursday = models.BooleanField(default=False)
+    on_friday = models.BooleanField(default=False)
+    on_saturday = models.BooleanField(default=False)
+    on_sunday = models.BooleanField(default=False)
+    """
     FIFTEEN_DAYS = 'fifteen_days'
     WEEKLY = 'weekly'
     DAYLY = 'dayly'
@@ -63,5 +81,6 @@ class SprinkleSchedule(models.Model):
         (OTHER, 'other')
     )
     sprinkle_frequency = models.CharField(max_length=15, choices=sprinkle_frequency_choices, default=DAYLY)
+    """
 
-    time = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(24)])
+    # time = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(24)])

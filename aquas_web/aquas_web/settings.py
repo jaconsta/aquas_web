@@ -26,7 +26,7 @@ SECRET_KEY = '#8#!@l1-#s=4_+#et%)hu2lm)&*(c2o1sz+&1)q3q_77e4e!4@'
 DEBUG = True
 
 if DEBUG:
-    ALLOWED_HOSTS = ['*']
+    ALLOWED_HOSTS = ['*']  # ['web']
 else:
     ALLOWED_HOSTS = []
 
@@ -126,3 +126,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
+
+STATIC_ROOT = '/static'

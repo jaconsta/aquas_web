@@ -70,3 +70,7 @@ target/
 
 # Mac Store
 .DS_Store
+
+## Need to configure better
+collect_static
+.collect_static
