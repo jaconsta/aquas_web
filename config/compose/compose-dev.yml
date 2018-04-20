@@ -26,6 +26,15 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: dev_test
       MYSQL_DATABASE: aquas_db
-      MYSQL_USER: developer
-      MYSQL_PASSWORD: developer_password
+      MYSQL_USER: django_aquas
+      MYSQL_PASSWORD: mypassword
     container_name: pomelo_dev_db
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   environment:
+  #     - PMA_ARBITRARY=1
+  #   restart: always
+  #   ports:
+  #     - 8082:80
+  #   volumes:
+  #     - /sessions

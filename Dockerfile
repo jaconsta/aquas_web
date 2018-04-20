@@ -3,8 +3,11 @@ FROM python:3.5-jessie
 RUN mkdir /app
 WORKDIR /app
 
+# RUN apt-get install libmysqlclient-dev
+
 COPY requirements.txt /app
 RUN pip install -r requirements.txt
+# pip install mysqlclient
 
 COPY ./bin/entrypoint.sh /app
 COPY ./aquas_web /app
