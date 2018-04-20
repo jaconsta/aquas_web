@@ -7,17 +7,52 @@ const deviceTableRow = '<tr>\
   <td><button type="button" class="btn btn-outline-info btn-sm mb-1" data-toggle="modal" data-target="#deviceDetailsModal" onclick="setSelectedDevice(__pk__)">Ver más </button></td> \
 </tr>'
 
-function setSelectedDevice (deviceId) {
+const populateDeviceInfo = (device) => {
+  jQuery('#detail_deviceId').text(device.fields.unique_id)
+  jQuery('#detail_deviceName').text(device.fields.name)
+}
+
+const populateDeviceSchedule = (schedule) => {
+  const $ = jQuery
+  const timing = [
+    'hour',
+    'minute',
+    'am_pm'
+  ]
+  const days = [
+    'on_monday',
+    'on_tuesday',
+    'on_wednesday',
+    'on_thursday',
+    'on_friday',
+    'on_saturday',
+    'on_sunday'
+  ]
+  days.forEach(day => $(`input[name=${day}]`)[0].checked=schedule.fields[day] === true)
+  timing.forEach(time => $(`select[name=${time}]`).val(schedule.fields[time]))
+}
+
+const setSelectedDevice = (deviceId) => {
   jQuery('#detail_id').val(deviceId)
 
   if (deviceId === '') return
 
   getDevice(deviceId)
-  .done((data) => {console.log('deviceIfo', data)})
+  .done((data) => {
+    const [device] = JSON.parse(data)
+    populateDeviceInfo(device)
+  })
   .fail(() => alert('Could not get the device'))
+
+  getDeviceSchedule(deviceId)
+  .done(data => {
+    const [schedule] = JSON.parse(data)
+    populateDeviceSchedule(schedule)
+  })
+  .fail(() => jQuery( ':reset' ).click())
 }
 
-function createDevice(event) {
+const createDevice = (event) => {
   const $ = jQuery
   const createDeviceForm = $("#createDeviceForm").serialize()
   event.preventDefault()
@@ -44,30 +79,40 @@ function createDevice(event) {
   }).fail(() => alert('Could not create the device'))
 }
 
-function getDevice(deviceId) {
+const getDevice = (deviceId) => {
   const $ = jQuery
   return $.ajax({
-    url: `/dashboard/devices/${deviceId}`,
+    url: `/api/devices/${deviceId}`,
     method: "GET",
     accepts: { 'Content-Type': 'application/json' },
   })
 }
 
-function scheduleDevice(event) {
+const deviceScheduleUrl = (deviceId) => `/api/devices/${deviceId}/schedule`
+
+const getDeviceSchedule = (deviceId) => {
+  const $ = jQuery
+  const url = deviceScheduleUrl(deviceId)
+  return $.ajax({
+    url,
+    method: "GET",
+    accepts: { 'Content-Type': 'application/json' },
+  })
+}
+
+const scheduleDevice = (event) => {
   event.preventDefault()
 
   const $ = jQuery
   const deviceId = $('#detail_id').val()
   const scheduleDeviceForm = $("#scheduleDeviceForm").serialize()
-  console.log(scheduleDeviceForm)
 
   return $.ajax({
-    url: `/dashboard/devices/${deviceId}/schedule`,
+    url: `/api/devices/${deviceId}/schedule`,
     method: "POST",
     accepts: { 'Content-Type': 'application/json' },
     data: scheduleDeviceForm
   }).done(function(data) {
-    console.log(data)
     setSelectedDevice('')
     $('#deviceDetailsModal').click()
     $( ':reset' ).click()

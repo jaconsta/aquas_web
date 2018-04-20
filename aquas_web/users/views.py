@@ -3,7 +3,7 @@ from django.contrib.auth import login as user_login
 from django.contrib.auth import logout as user_logout
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 
 def register_get(request):
@@ -31,8 +31,6 @@ def login_post(request):
     form_fields = ['username', 'password']
     user_fields = dict([(field, request.POST[field]) for field in form_fields])
     user = authenticate(**user_fields)
-    print(user_fields)
-    print(user)
     if user is not None:
         user_login(request, user)
         return HttpResponseRedirect('/dashboard')
@@ -55,7 +53,7 @@ def login(request):
 
 def logout(request):
     user_logout(request)
-    return login_get(request)
+    return redirect('/users/login')
 
 
 def register(request):
