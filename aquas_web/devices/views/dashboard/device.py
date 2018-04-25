@@ -6,7 +6,7 @@ from .create_device import create_device
 
 def get(request):
     devices = Device.objects.filter(owner=request.user)
-    context = {'devices': devices}
+    context = {'devices': devices, 'current': 'device'}
     return render(request, 'templates/dashboard/devices.html', context)
 
 
