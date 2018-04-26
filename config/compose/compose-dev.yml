@@ -10,25 +10,37 @@ services:
       - ../../.collect_static:/static
     depends_on:
       - web
+    networks:
+      - backend
   web:
     build: ../../
     container_name: pomelo_dev_web
-    # command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn mydjango.wsgi -b 0.0.0.0:8000"
     command: ["./entrypoint.sh"]
+    environment:
+      ENVIRONMENT: production
     depends_on:
       - db
     volumes:
       - ../../.collect_static:/static
     expose:
       - "8000"
+    networks:
+      - backend
   db:
-    image: mysql:latest
+    image: mysql:5.7
+    ports:
+      - 3306
     environment:
       MYSQL_ROOT_PASSWORD: dev_test
       MYSQL_DATABASE: aquas_db
       MYSQL_USER: django_aquas
       MYSQL_PASSWORD: mypassword
     container_name: pomelo_dev_db
+    networks:
+      - backend
+networks:
+  backend:
+
   # phpmyadmin:
   #   image: phpmyadmin/phpmyadmin
   #   environment:
@@ -36,5 +48,7 @@ services:
   #   restart: always
   #   ports:
   #     - 8082:80
+  #   networks:
+  #     - backend
   #   volumes:
   #     - /sessions
