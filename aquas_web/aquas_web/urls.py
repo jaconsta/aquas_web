@@ -13,10 +13,22 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import include, path
+from rest_framework import routers
 
+from aquas_web.swagger import schema_view
 from dashboard import views as dashboardViews
+
+from devices.views.api.device import DeviceViewSet
+from devices.views.api.schedule import ScheduleViewSet
+from devices.views.api.heartbeat import DeviceHeartbeatViewSet
+
+router = routers.DefaultRouter()
+router.register(r'devices', DeviceViewSet)
+router.register(r'devices/<device_id>/sprinkle', ScheduleViewSet)
+router.register(r'devices/heartbeat', DeviceHeartbeatViewSet)
 
 dashboard_patterns = [
     path('', dashboardViews.IndexView.as_view()),
@@ -31,5 +43,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
     path('dashboard', include(dashboard_patterns)),
-    path('api/', include(api_patterns))
+    # API
+    # path('api/', include(api_patterns)),
+    url(r'^api/', include(router.urls)),
+    # Swagger / OpenAPI docs
+    url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]

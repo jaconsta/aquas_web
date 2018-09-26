@@ -2,7 +2,8 @@ from django.db import models
 
 from .device import Device
 
-class DeviceConnections(models.Model):
+
+class DeviceHeartbeat(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     connection_time = models.DateTimeField(auto_now_add=True)
 

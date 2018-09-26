@@ -1,8 +1,16 @@
 from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
+from rest_framework.viewsets import ModelViewSet
+
 
 from devices.models import Device, SprinkleSchedule
+from devices.serializers import SprinkleScheduleSerializer
+
+
+class ScheduleViewSet(ModelViewSet):
+    queryset = SprinkleSchedule.objects.all()
+    serializer_class = SprinkleScheduleSerializer
 
 
 def get(request, device):

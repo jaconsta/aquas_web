@@ -1,3 +1,3 @@
 from .device import Device
-from .device_connections import DeviceConnections
+from .device_heartbeat import DeviceHeartbeat
 from .sprinkle_schedule import SprinkleSchedule
