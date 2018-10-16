@@ -21,12 +21,15 @@ from rest_framework import routers
 from aquas_web.swagger import schema_view
 from dashboard import views as dashboardViews
 
-from devices.views.api.device import DeviceViewSet
+from users.api_views import UserAuthViewSet
+from devices.views.api.device import DeviceViewSet, ListDevices
 from devices.views.api.schedule import ScheduleViewSet
 from devices.views.api.heartbeat import DeviceHeartbeatViewSet
 
 router = routers.DefaultRouter()
+router.register(r'auth', UserAuthViewSet, base_name='auth')
 router.register(r'devices', DeviceViewSet)
+router.register(r'my_devices', ListDevices)
 router.register(r'devices/<device_id>/sprinkle', ScheduleViewSet)
 router.register(r'devices/heartbeat', DeviceHeartbeatViewSet)
 
