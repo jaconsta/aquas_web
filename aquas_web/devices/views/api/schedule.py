@@ -1,16 +1,25 @@
 from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
-from rest_framework.viewsets import ModelViewSet
-
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework import mixins, status
 
 from devices.models import Device, SprinkleSchedule
 from devices.serializers import SprinkleScheduleSerializer
 
 
-class ScheduleViewSet(ModelViewSet):
+class ScheduleViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
     queryset = SprinkleSchedule.objects.all()
     serializer_class = SprinkleScheduleSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        SprinkleSchedule.objects.update_or_create(device=serializer.validated_data['device'], defaults=serializer.validated_data)
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+
+    def retrieve(self, request, *args, **kwargs):
+        return JsonResponse({'message': 'pending to do'})
 
 
 def get(request, device):

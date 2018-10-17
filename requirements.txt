@@ -3,3 +3,4 @@ djangorestframework==3.8.2
 drf-yasg==1.10.0
 gunicorn==19.7.1
 django-cors-headers===2.4.0
+pyjwt===1.6.4
