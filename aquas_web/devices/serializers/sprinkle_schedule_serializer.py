@@ -15,4 +15,5 @@ class SprinkleScheduleSerializer(ModelSerializer):
 
     class Meta:
         model = SprinkleSchedule
-        fields = '__all__'
+        fields = ('monday', 'tuesday', 'wednesday', 'thursday', 'friday',
+                  'saturday', 'sunday', 'minute', 'hour', 'am_pm', 'device')

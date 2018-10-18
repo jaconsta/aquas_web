@@ -3,6 +3,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import mixins, status
+from rest_framework.decorators import action
 
 from devices.models import Device, SprinkleSchedule
 from devices.serializers import SprinkleScheduleSerializer
@@ -18,8 +19,18 @@ class ScheduleViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, Generi
         SprinkleSchedule.objects.update_or_create(device=serializer.validated_data['device'], defaults=serializer.validated_data)
         return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
 
-    def retrieve(self, request, *args, **kwargs):
-        return JsonResponse({'message': 'pending to do'})
+    def retrieve(self, request, pk=None, *args, **kwargs):
+        try:
+            schedule = SprinkleSchedule.objects.get(device=pk)
+        except:
+            return JsonResponse({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+        schedule_serialized = self.get_serializer(schedule)
+        return JsonResponse(schedule_serialized.data)
+
+    @action(detail=True, methods=['post'])
+    def now(self, request, pk=None):
+        print(f'I will start now {pk}')
+        return JsonResponse({'status': 'Message sent'})
 
 
 def get(request, device):
