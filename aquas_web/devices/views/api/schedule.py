@@ -5,6 +5,7 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import mixins, status
 from rest_framework.decorators import action
 
+from devices.services.sprinkle import water_now
 from devices.models import Device, SprinkleSchedule
 from devices.serializers import SprinkleScheduleSerializer
 
@@ -29,7 +30,15 @@ class ScheduleViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, Generi
 
     @action(detail=True, methods=['post'])
     def now(self, request, pk=None):
-        print(f'I will start now {pk}')
+        try:
+            device = Device.objects.get(pk=pk)
+        except Device.DoesNotExist:
+            return JsonResponse({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            water_now(device)
+        except Exception:
+            # MQTT exception
+            return JsonResponse({'error': 'Could not send the message'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return JsonResponse({'status': 'Message sent'})
 
 
