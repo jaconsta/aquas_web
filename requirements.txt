@@ -5,3 +5,4 @@ gunicorn==19.7.1
 django-cors-headers===2.4.0
 pyjwt===1.6.4
 paho-mqtt===1.4.0
+APScheduler===3.5.3

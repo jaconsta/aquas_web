@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'users',
     'dashboard',
-    'devices'
+    'devices.apps.DevicesConfig'
 ]
 
 MIDDLEWARE = [

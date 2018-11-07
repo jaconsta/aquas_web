@@ -16,7 +16,7 @@ def water_now(device):
         ]})
 
     mqtt_publish.single(
-        topic=f'/aquas/water/{device.unique_id}',
+        topic=f'/pomelo/water/{device.unique_id}',
         payload=message,
         hostname=mqtt_host,
         port=mqtt_port,
