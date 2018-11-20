@@ -1,6 +1,7 @@
 import json
 
 from paho.mqtt import publish as mqtt_publish
+from paho.mqtt import client as mqtt_client
 
 from aquas_web.settings.default_variables import mqtt_host, mqtt_port
 
@@ -23,3 +24,23 @@ def water_now(device):
         client_id='foo3'
     )
 
+
+def scheduled_sprinkle(scheduled):
+    client = mqtt_client.Client()
+    client.connect(mqtt_host, mqtt_port)
+    for schedule in scheduled:
+        device = schedule.device
+        message = json.dumps({
+            "device": device.unique_id,
+            "actions": [
+                {
+                    "actuator": "sprinkle",
+                    "action": "now"
+                }
+            ]})
+
+        try:
+            client.publish(f'/pomelo/water/{device.unique_id}', message).wait_for_publish()
+        except ValueError:
+            print(f'Could not send message to ${device.unique_id}.')
+    client.disconnect()
