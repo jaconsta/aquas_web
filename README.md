@@ -2,6 +2,8 @@
 
 Pull the image
 
+**Note** There are no more submodules now.
+ 
 Install git submodules
 ```
 git submodule update --init --recursive

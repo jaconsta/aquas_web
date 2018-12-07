@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'users',
-    'dashboard',
     'devices.apps.DevicesConfig'
 ]
 

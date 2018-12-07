@@ -19,9 +19,8 @@ from django.urls import include, path
 from rest_framework import routers
 
 from aquas_web.swagger import schema_view
-from dashboard import views as dashboardViews
 
-from users.api_views import UserAuthViewSet
+from users.views import UserAuthViewSet
 from devices.views.api.device import DeviceViewSet, ListDevices
 from devices.views.api.schedule import ScheduleViewSet
 from devices.views.api.heartbeat import DeviceHeartbeatViewSet
@@ -34,21 +33,9 @@ router.register(r'devices/heartbeat', DeviceHeartbeatViewSet)
 router.register(r'my_devices', ListDevices)
 router.register(r'devices_sprinkle', ScheduleViewSet)
 
-dashboard_patterns = [
-    path('', dashboardViews.IndexView.as_view()),
-    path('/devices/', include('devices.urls.dashboard'))
-]
-
-api_patterns = [
-    path('devices/', include('devices.urls.api'))
-]
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('users/', include('users.urls')),
-    path('dashboard', include(dashboard_patterns)),
     # API
-    # path('api/', include(api_patterns)),
     url(r'^api/', include(router.urls)),
     # Swagger / OpenAPI docs
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
