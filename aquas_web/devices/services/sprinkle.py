@@ -17,7 +17,7 @@ def water_now(device):
         ]})
 
     mqtt_publish.single(
-        topic=f'/pomelo/water/{device.unique_id}',
+        topic='/pomelo/water/{}'.format(device.unique_id),
         payload=message,
         hostname=mqtt_host,
         port=mqtt_port,
@@ -40,7 +40,7 @@ def scheduled_sprinkle(scheduled):
             ]})
 
         try:
-            client.publish(f'/pomelo/water/{device.unique_id}', message).wait_for_publish()
+            client.publish('/pomelo/water/{}'.format(device.unique_id), message).wait_for_publish()
         except ValueError:
-            print(f'Could not send message to ${device.unique_id}.')
+            print('Could not send message to ${}.'.format(device.unique_id))
     client.disconnect()

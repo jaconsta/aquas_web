@@ -47,6 +47,6 @@ def run_scheduled_sprinkle():
         **days
     )
     if not scheduled_devices.exists():
-        print(f'{now} no device scheduled.')
+        print('{now} no device scheduled.'.format(now=now))
         return
     scheduled_sprinkle(scheduled_devices)
