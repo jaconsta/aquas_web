@@ -10,6 +10,8 @@ class UserAuthenticationTests(APITestCase):
         """
         url = '/api/auth/register/'
         user_body = {
+            'firstName': 'Javier',
+            'lastName': 'Constain',
             'email': 'test@mail.com',
             'password': 'randomString'
         }
@@ -21,6 +23,8 @@ class UserAuthenticationTests(APITestCase):
         user = User.objects.all()[0]
         self.assertEqual(user.username, user_body['email'])
         self.assertNotEqual(user.password, user_body['password'])
+        self.assertEqual(user.first_name, user_body['firstName'])
+        self.assertEqual(user.last_name, user_body['lastName'])
 
     def test_cannot_register_user(self):
         """

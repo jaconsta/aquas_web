@@ -10,6 +10,8 @@ from aquas_web.settings.default_variables import jwt_key
 
 class AuthSerializer(ModelSerializer):
     email = serializers.EmailField(required=True)
+    firstName = serializers.CharField(max_length=200, source='first_name', required=False)
+    lastName = serializers.CharField(max_length=200, source='last_name', required=False)
 
     def create(self, validated_data):
         username = validated_data['email']
@@ -34,5 +36,6 @@ class AuthSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'password')
+        fields = ('firstName', 'lastName', 'email', 'password')
+        extra_kwargs = {'password': {'write_only': True}}
 
