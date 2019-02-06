@@ -51,7 +51,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'users.middleware.bearer_token_authentication',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -131,3 +131,13 @@ STATIC_ROOT = '../static'
 # CORS configuration
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        "api_key": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+          },
+    },
+}
