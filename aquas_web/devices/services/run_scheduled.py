@@ -37,10 +37,10 @@ def run_scheduled_sprinkle():
     start_hour = start.hour if start.hour < 12 else start.hour - 12
     start_minute = start.minute
     days = {now_day: True, start_day: True}
-    am_pm = SprinkleSchedule.AM if start_hour < 12 else SprinkleSchedule.PM
+    am_pm = SprinkleSchedule.AM if start.hour < 12 else SprinkleSchedule.PM
     scheduled_devices = SprinkleSchedule.objects.filter(
         hour__gte=start_hour,
-        hour__lt=now_hour,
+        hour__lte=now_hour,
         minute__gte=start_minute,
         minute__lt=now_minute,
         am_pm=am_pm,
