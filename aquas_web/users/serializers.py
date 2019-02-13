@@ -5,6 +5,7 @@ from django.db import IntegrityError
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 
+from users.utils.authentication import generate_user_token
 from aquas_web.settings.default_variables import jwt_key
 
 
@@ -32,7 +33,7 @@ class AuthSerializer(ModelSerializer):
         user = authenticate(**credentials)
         if user is None:
             raise Exception('Invalid user')
-        return jwt.encode({'email': user.email}, jwt_key, algorithm='HS256')
+        return generate_user_token(user)# jwt.encode({'email': user.email}, jwt_key, algorithm='HS256')
 
     class Meta:
         model = User

@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from rest_framework import status
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.decorators import action
 
@@ -14,8 +15,10 @@ class DeviceViewSet(ModelViewSet):
         return self.queryset.filter(owner=self.request.user)
 
     def create(self, request):
+        if not request.data.get('name'):
+            return JsonResponse({'detail': 'Missing name'}, status=status.HTTP_400_BAD_REQUEST)
         device = Device.createDevice(request.user, request.data.get('name'))
-        return JsonResponse({'status': 'device created'}, status='201')
+        return JsonResponse({'status': 'device created'}, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['get'])
     def device_count(self, request):

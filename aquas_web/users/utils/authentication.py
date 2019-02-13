@@ -8,6 +8,10 @@ from rest_framework.authentication import BaseAuthentication
 from aquas_web.settings.default_variables import jwt_key
 
 
+def generate_user_token(user):
+    return jwt.encode({'email': user.email}, jwt_key, algorithm='HS256')
+
+
 class BearerAuthentication(BaseAuthentication):
     unprotected_paths = [
         '/',
