@@ -36,27 +36,40 @@ class SprinkleSchedule(models.Model):
             device_uuid=self.device.unique_id
         )
 
-    def next_day(self):
-        week_days = [
+    def sorted_weekdays(self):
+        return [
             self.on_monday, self.on_tuesday, self.on_wednesday,
             self.on_thursday, self.on_friday, self.on_saturday, self.on_sunday
         ]
 
+    def get_schedule_days(self, today):
+        week_days = self.sorted_weekdays()
+        last_day = self.last_run.weekday() if self.last_run else today.weekday()
+        try:
+            next_day = week_days.index(True, last_day + 1)
+        except ValueError:
+            next_day = week_days.index(True) + 1
+            last_day = 0
+            return last_day, next_day
+
+        if today.hour < self.hour:
+            next_day -= 1
+        return last_day, next_day
+
+    def when_should_sprinkle_next(self):
         # There is not any scheduled day.
+        week_days = self.sorted_weekdays()
         if True not in week_days:
             return None
 
-        last_day = self.last_run.weekday() if self.last_run else 0
-        try:
-            next_day = week_days.index(True, last_day)
-        except ValueError:
-            next_day = week_days.index(True)
-            last_day = 0
-
         today = datetime.today()
-        week_days_delta = today.day + (next_day - last_day)
+        last_day, next_day = self.get_schedule_days(today)
+
+        # Calculate next schedule time
+        hour = self.hour + (12 if self.am_pm == self.PM else 0)  # 24 hr format
+        week_days_delta = next_day - last_day
         days_delta = timedelta(days=week_days_delta)
-        hour = self.hour + (12 if self.am_pm == self.PM else 0)
+
         next_schedule = datetime(today.year, today.month, today.day, hour, self.minute) + days_delta
         return next_schedule
 
@@ -68,5 +81,5 @@ class SprinkleSchedule(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
-        self.next_schedule = self.next_day()
+        self.next_schedule = self.when_should_sprinkle_next()
         super().save(*args, **kwargs)
