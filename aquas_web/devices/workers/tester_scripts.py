@@ -2,7 +2,7 @@ import json
 
 from paho.mqtt import publish
 
-from aquas_web.aquas_web.settings.default_variables import mqtt_host, mqtt_port, mqtt_heartbeat_topic
+from aquas_web.settings.default_variables import mqtt_host, mqtt_port, mqtt_heartbeat_topic
 
 """
 docker run --name=local-mqt -dt -it -p 1883:1883 -p 9001:9001 eclipse-mosquitto

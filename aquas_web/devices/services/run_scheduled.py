@@ -1,7 +1,7 @@
 import datetime
 
-from ..services.sprinkle import water_now, scheduled_sprinkle
-from ..models import SprinkleSchedule, Device
+from ..services.sprinkle import scheduled_sprinkle
+from ..models import SprinkleSchedule
 
 SPRINKLE_SCHEDULE_MIN = 5
 
