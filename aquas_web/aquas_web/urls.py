@@ -29,7 +29,7 @@ router = routers.DefaultRouter()
 router.register(r'auth', UserAuthViewSet, base_name='auth')
 router.register(r'devices', DeviceViewSet)
 router.register(r'devices/<device_id>/sprinkle', ScheduleViewSet)
-router.register(r'devices/heartbeat', DeviceHeartbeatViewSet)
+router.register(r'devices_heartbeat', DeviceHeartbeatViewSet)
 router.register(r'my_devices', ListDevices)
 router.register(r'devices_sprinkle', ScheduleViewSet)
 

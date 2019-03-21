@@ -1,6 +1,6 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from .services.run_scheduled import run_scheduled_sprinkle
+from devices.services.run_scheduled import run_scheduled_sprinkle
 
 
 def run_schedule_sprinkles():
@@ -11,3 +11,7 @@ def run_schedule_sprinkles():
 
 def run_workers():
     run_schedule_sprinkles()
+
+
+if __name__ == '__main__':
+    run_workers()

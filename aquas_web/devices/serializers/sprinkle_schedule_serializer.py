@@ -13,7 +13,9 @@ class SprinkleScheduleSerializer(ModelSerializer):
     saturday = serializers.BooleanField(source='on_saturday')
     sunday = serializers.BooleanField(source='on_sunday')
 
+    nextSchedule = serializers.DateTimeField(source='next_schedule', allow_null=True)
+
     class Meta:
         model = SprinkleSchedule
         fields = ('monday', 'tuesday', 'wednesday', 'thursday', 'friday',
-                  'saturday', 'sunday', 'minute', 'hour', 'am_pm', 'device')
+                  'saturday', 'sunday', 'minute', 'hour', 'am_pm', 'device', 'nextSchedule')
