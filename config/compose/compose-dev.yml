@@ -17,7 +17,8 @@ services:
     container_name: pomelo_dev_web
     command: ["./entrypoint.sh"]
     environment:
-      ENVIRONMENT: production
+      ENVIRONMENT: development
+      MQTT_HOST: mqtt
     depends_on:
       - db
     volumes:
@@ -26,6 +27,24 @@ services:
       - "8000"
     networks:
       - backend
+  worker_scheduler:
+    build: ../../
+    container_name: pomelo_worker_scheduler_web
+    command: ["python", "./devices/workers/scheduled.py"]
+    networks:
+      - backend
+    environment:
+      MQTT_HOST: mqtt
+      PYTHONPATH: ./
+  worker_listener:
+    build: ../../
+    container_name: pomelo_worker_listener_web
+    command: ["python", "./devices/workers/heartbeat_listener.py"]
+    networks:
+      - backend
+    environment:
+      MQTT_HOST: mqtt
+      PYTHONPATH: ./
   db:
     image: mysql:5.7
     ports:
@@ -38,6 +57,16 @@ services:
     container_name: pomelo_dev_db
     networks:
       - backend
+  mqtt:
+    image: eclipse-mosquitto:1.5
+    container_name: pomelo_mqtt
+    ports:
+      - 1883
+      - 9001
+    networks:
+      - backend
+
+
 networks:
   backend:
 
