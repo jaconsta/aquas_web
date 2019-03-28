@@ -4,6 +4,7 @@ echo starting base Django Migration
 ENVIRONMENT=${ENVIRONMENT:="development"}
 # python manage.py migrate --settings=aquas_web.settings.production
 # Startup order: https://docs.docker.com/compose/startup-order/
+echo Running on $ENVIRONMENT environment
 MANAGE_PY="manage.py"
 SETTINGS_FILE="aquas_web.settings.$ENVIRONMENT"
 python $MANAGE_PY migrate --settings=$SETTINGS_FILE

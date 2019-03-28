@@ -1,5 +1,12 @@
 version: '3'
 services:
+  front:
+    image: jaconsta/aquas_front:latest
+    container_name: pomelo_front
+    ports:
+      - "8080:80"
+    networks:
+      - backend
   nginx:
     image: nginx:latest
     container_name: pomelo_dev_nginx
@@ -13,6 +20,7 @@ services:
     networks:
       - backend
   web:
+    image: jaconsta/aquas_web
     build: ../../
     container_name: pomelo_dev_web
     command: ["./entrypoint.sh"]
@@ -28,6 +36,7 @@ services:
     networks:
       - backend
   worker_scheduler:
+    image: jaconsta/aquas_web
     build: ../../
     container_name: pomelo_worker_scheduler_web
     command: ["python", "./devices/workers/scheduled.py"]
@@ -36,7 +45,11 @@ services:
     environment:
       MQTT_HOST: mqtt
       PYTHONPATH: ./
+    depends_on:
+      - mqtt
+      - db
   worker_listener:
+    image: jaconsta/aquas_web
     build: ../../
     container_name: pomelo_worker_listener_web
     command: ["python", "./devices/workers/heartbeat_listener.py"]
@@ -45,6 +58,9 @@ services:
     environment:
       MQTT_HOST: mqtt
       PYTHONPATH: ./
+    depends_on:
+      - mqtt
+      - db
   db:
     image: mysql:5.7
     ports:
