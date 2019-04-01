@@ -1,0 +1,11 @@
+[Unit]
+Description=Pomelo web server
+
+[Service]
+Restart=on-failure
+WorkingDirectory=/home/pi/projects/aquas_web/aquas_web
+Environment=PYTHONPATH=/home/pi/projects/aquas_web/venv/bin
+ExecStart=/home/pi/projects/aquas_web/venv/bin/gunicorn aquas_web.wsgi:application --name aquas_web --bind 0.0.0.0:8000 --workers 3
+
+[Install]
+WantedBy=multi-user.target

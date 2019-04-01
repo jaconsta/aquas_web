@@ -1,0 +1,11 @@
+[Unit]
+Description=Pomelo device scheduled tasks worker
+
+[Service]
+Restart=on-failure
+WorkingDirectory=/home/pi/projects/aquas_web/aquas_web
+Environment=PYTHONPATH=/home/pi/projects/aquas_web/aquas_web
+ExecStart=/home/pi/projects/aquas_web/venv/bin/python3 /home/pi/projects/aquas_web/aquas_web/devices/workers/scheduled.py
+
+[Install]
+WantedBy=aquas_server.service
