@@ -1,6 +1,7 @@
 from django.utils import timezone
 
 from .logger import get_console_logger
+from .save_scheduled_tasks import save_scheduled_tasks
 from ..services.sprinkle import scheduled_sprinkle
 from ..models import SprinkleSchedule
 
@@ -24,6 +25,7 @@ def run_scheduled_sprinkle():
     now = timezone.now()
     scheduled_devices = SprinkleSchedule.objects.filter(next_schedule__lte=now)
     run_success = scheduled_sprinkle(scheduled_devices)
+    save_scheduled_tasks(run_success)
     logger.info('run_success')
     logger.info(run_success)
     SprinkleSchedule.objects.filter(id__in=run_success).update(last_run=now)

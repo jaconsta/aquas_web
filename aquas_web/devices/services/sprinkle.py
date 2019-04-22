@@ -5,6 +5,7 @@ from paho.mqtt import client as mqtt_client
 
 from aquas_web.settings.default_variables import mqtt_host, mqtt_port, mqtt_sprinkle_topic
 from devices.services.logger import get_console_logger
+from devices.utils import id_generator
 
 logger = get_console_logger(__name__)
 
@@ -34,18 +35,20 @@ def scheduled_sprinkle(scheduled):
     scheduled_sent = []
     for schedule in scheduled:
         device = schedule.device
+        unique_code = id_generator()
         message = json.dumps({
             "device": device.unique_id,
             "actions": [
                 {
                     "actuator": "sprinkle",
-                    "action": "now"
+                    "action": "scheduled",
+                    "code": unique_code
                 }
             ]})
 
         try:
             client.publish(mqtt_sprinkle_topic.format(device.unique_id), message).wait_for_publish()
-            scheduled_sent.append(schedule.id)
+            scheduled_sent.append({"device": schedule.id, "code": unique_code})
         except ValueError:
             logger.error('Could not send message to ${}.'.format(device.unique_id))
     client.disconnect()
