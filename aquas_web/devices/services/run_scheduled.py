@@ -27,5 +27,5 @@ def run_scheduled_sprinkle():
     run_success = scheduled_sprinkle(scheduled_devices)
     save_scheduled_tasks(run_success)
     logger.info('run_success')
-    logger.info(run_success)
-    SprinkleSchedule.objects.filter(id__in=run_success).update(last_run=now)
+    SprinkleSchedule.objects.filter(id__in=[run['device'] for run in run_success]).update(last_run=now)
+

@@ -48,7 +48,7 @@ def scheduled_sprinkle(scheduled):
 
         try:
             client.publish(mqtt_sprinkle_topic.format(device.unique_id), message).wait_for_publish()
-            scheduled_sent.append({"device": schedule.id, "code": unique_code})
+            scheduled_sent.append({"device": device.id, "code": unique_code})
         except ValueError:
             logger.error('Could not send message to ${}.'.format(device.unique_id))
     client.disconnect()
