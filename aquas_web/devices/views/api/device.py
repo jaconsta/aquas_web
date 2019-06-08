@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from devices.serializers import DeviceSerializer
 from devices.models import Device
@@ -14,10 +15,15 @@ class DeviceViewSet(ModelViewSet):
     def get_queryset(self):
         return self.queryset.filter(owner=self.request.user)
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
     def create(self, request):
         if not request.data.get('name'):
             return JsonResponse({'detail': 'Missing name'}, status=status.HTTP_400_BAD_REQUEST)
-        device = Device.createDevice(request.user, request.data.get('name'))
+        Device.createDevice(request.user, request.data.get('name'))
         return JsonResponse({'status': 'device created'}, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['get'])

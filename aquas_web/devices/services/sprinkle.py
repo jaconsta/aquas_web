@@ -20,13 +20,17 @@ def water_now(device):
             }
         ]})
 
-    mqtt_publish.single(
-        topic='/pomelo/water/{}'.format(device.unique_id),
-        payload=message,
-        hostname=mqtt_host,
-        port=mqtt_port,
-        client_id='foo3'
-    )
+    try:
+        mqtt_publish.single(
+            topic='/pomelo/water/{}'.format(device.unique_id),
+            payload=message,
+            hostname=mqtt_host,
+            port=mqtt_port,
+            client_id='foo3'
+        )
+    except ConnectionRefusedError as e:
+        logger.error('Could not connect to the MQTT server')
+        raise Exception('mqtt_connection')
 
 
 def scheduled_sprinkle(scheduled):

@@ -6,7 +6,7 @@ def run_schedule_sprinkles():
     from devices.services.run_scheduled import run_scheduled_sprinkle
 
     scheduler = BlockingScheduler()
-    scheduler.add_job(run_scheduled_sprinkle, 'interval', minutes=5)
+    scheduler.add_job(run_scheduled_sprinkle, 'interval', minutes=1)
     scheduler.start()
 
 

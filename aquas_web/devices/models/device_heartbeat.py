@@ -1,9 +1,17 @@
 from django.db import models
 
 from .device import Device
+from django.utils import timezone
 
 
 class DeviceHeartbeat(models.Model):
+    """
+    It stores the events sent and received from the devices.
+
+    Events detected now.
+    - Heartbeat. Device is alive
+    - Sprinkle. A sprinkle job sent and executed.
+    """
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     connection_time = models.DateTimeField(auto_now_add=True)
 
@@ -17,5 +25,14 @@ class DeviceHeartbeat(models.Model):
     )
 
     heartbeat_code = models.CharField(max_length=20, blank=True, null=True)
+    resolved = models.BooleanField(default=False)
     # Could be named like beat_type
     connection_status = models.CharField(max_length=15, choices=connection_status_choices, default=HEARTBEAT)
+
+    def resolve_sprinkle(self):
+        self.connection_time = timezone.now()
+        self.resolve()
+
+    def resolve(self):
+        self.resolved = True
+        self.save()

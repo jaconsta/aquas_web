@@ -14,7 +14,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
 
@@ -28,13 +27,11 @@ from devices.views.api.heartbeat import DeviceHeartbeatViewSet
 router = routers.DefaultRouter()
 router.register(r'auth', UserAuthViewSet, base_name='auth')
 router.register(r'devices', DeviceViewSet)
-router.register(r'devices/<device_id>/sprinkle', ScheduleViewSet)
 router.register(r'devices_heartbeat', DeviceHeartbeatViewSet)
 router.register(r'my_devices', ListDevices)
 router.register(r'devices_sprinkle', ScheduleViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     # API
     url(r'^api/', include(router.urls)),
     # Swagger / OpenAPI docs
