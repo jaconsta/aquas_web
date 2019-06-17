@@ -67,6 +67,5 @@ class DeviceHeartbeatViewSet(GenericViewSet):
         devices_count = list(DeviceHeartbeat.objects.filter(connection_status='sprinkle').annotate(conn_time=Cast('connection_time', DateField())).values('conn_time').annotate(sprinkles=Count('device')))
 
         sprinkles = [{'day': date, 'sprinkles': next(filter(lambda x: x['conn_time'].strftime('%Y-%m-%d') == date, devices_count), {}).get('sprinkles', 0)} for date in days_till_today()]
-        print(sprinkles)
 
         return JsonResponse({'devices_count': sprinkles}, safe=False)
