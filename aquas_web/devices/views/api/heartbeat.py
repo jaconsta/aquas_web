@@ -3,7 +3,7 @@ import datetime
 from django.http import JsonResponse
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.decorators import action
-from django.db.models import Count, DateField
+from django.db.models import Count, DateField, Max, Q
 from django.db.models.functions import Cast
 
 
@@ -27,15 +27,16 @@ class DeviceHeartbeatViewSet(GenericViewSet):
 
     @action(detail=False, methods=['get'])
     def latest(self, request):
-        beats_query = self.get_queryset().filter(device__owner=request.user).order_by('device', '-connection_time', 'connection_status')  # .distinct('connection_time', 'heartbeat_code'))
-        # replacement of the distinct or first of each group
-        beats = {}
-        for beat in beats_query:
-            key = '{}_{}'.format(beat.device.id, beat.connection_status)
-            if key not in beats:
-                beats[key] = beat
-        beats_json = self.get_serializer(beats.values(), many=True)
-        return JsonResponse(beats_json.data, safe=False)
+        """
+        :param request:
+        :return:
+        """
+        query = self.get_queryset()\
+            .filter(device__owner=request.user)\
+            .filter(Q(resolved=True) | Q(connection_status='heartbeat'))\
+            .values('device', 'connection_status')\
+            .annotate(connection_time=Max('connection_time'))
+        return JsonResponse(list(query), safe=False)
 
     @action(detail=False, methods=['get'])
     def daily_sprinkles(self, request):
@@ -64,7 +65,13 @@ class DeviceHeartbeatViewSet(GenericViewSet):
         :param request:
         :return:
         """
-        devices_count = list(DeviceHeartbeat.objects.filter(connection_status='sprinkle').annotate(conn_time=Cast('connection_time', DateField())).values('conn_time').annotate(sprinkles=Count('device')))
+        devices_count = list(
+            DeviceHeartbeat.objects
+            .filter(connection_status='sprinkle')
+            .annotate(conn_time=Cast('connection_time', DateField()))
+            .values('conn_time')
+            .annotate(sprinkles=Count('device'))
+        )
 
         sprinkles = [{'day': date, 'sprinkles': next(filter(lambda x: x['conn_time'].strftime('%Y-%m-%d') == date, devices_count), {}).get('sprinkles', 0)} for date in days_till_today()]
 
