@@ -45,8 +45,8 @@ def publish_sprinkled():
 
 def receive_sprinkle_schedule():
     def mqtt_on_connect(client, *args):
-        client.subscribe(topic=mqtt_sprinkle_topic.format('MD8HFK'))
-        print('subscribed to {}'.format(mqtt_sprinkle_topic.format('MD8HFK')))
+        client.subscribe(topic=mqtt_sprinkle_topic.format('MBBSBG'))
+        print('subscribed to {}'.format(mqtt_sprinkle_topic.format('MBBSBG')))
         
     def mqtt_on_message(client, userdata, message):
         payload = message.payload.decode('utf-8')

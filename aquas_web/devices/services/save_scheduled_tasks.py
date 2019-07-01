@@ -7,5 +7,5 @@ def save_scheduled_tasks(tasks):
     with transaction.atomic():
         for task in tasks:
             device = Device.objects.get(pk=task['device'])
-            scheduled = DeviceHeartbeat(device=device, heartbeat_code=task['code'], task_type=DeviceHeartbeat.SPRINKLE_OK)
+            scheduled = DeviceHeartbeat(device=device, heartbeat_code=task['code'], connection_status=DeviceHeartbeat.SPRINKLE_OK)
             scheduled.save()

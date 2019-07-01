@@ -16,7 +16,7 @@ def days_till_today():
     progress = now + datetime.timedelta(days=-30)
     step = datetime.timedelta(days=1)
 
-    while progress < now:
+    while progress <= now:
         yield progress.strftime('%Y-%m-%d')
         progress += step
 
@@ -67,7 +67,7 @@ class DeviceHeartbeatViewSet(GenericViewSet):
         """
         devices_count = list(
             DeviceHeartbeat.objects
-            .filter(connection_status='sprinkle')
+            .filter(connection_status='sprinkle', resolved=True)
             .annotate(conn_time=Cast('connection_time', DateField()))
             .values('conn_time')
             .annotate(sprinkles=Count('device'))
@@ -76,3 +76,15 @@ class DeviceHeartbeatViewSet(GenericViewSet):
         sprinkles = [{'day': date, 'sprinkles': next(filter(lambda x: x['conn_time'].strftime('%Y-%m-%d') == date, devices_count), {}).get('sprinkles', 0)} for date in days_till_today()]
 
         return JsonResponse({'devices_count': sprinkles}, safe=False)
+
+    @action(detail=False, methods=['get'])
+    def active_devices(self, request):
+        now = datetime.datetime.now()
+        progress = now - datetime.timedelta(minutes=10)
+        active_count = DeviceHeartbeat.objects\
+            .filter(connection_status='heartbeat', connection_time__gte=progress)\
+            .values('device', 'connection_status')\
+            .annotate(connection_time=Max('connection_time'))\
+            .count()
+
+        return JsonResponse({'active_devices': active_count})
