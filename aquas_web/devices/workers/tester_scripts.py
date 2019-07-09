@@ -13,10 +13,12 @@ logger = get_console_logger(__name__)
 docker run --name=local-mqt -dt -it -p 1883:1883 -p 9001:9001 eclipse-mosquitto
 """
 
+DEVICE_UUID = 'TVSZSD'
+
 
 def publish_heartbeat():
     message = {
-        'device': 'MBBSBG',
+        'device': DEVICE_UUID,
         'type': 'heartbeat',
     }
     payload = json.dumps(message)
@@ -30,7 +32,7 @@ def publish_heartbeat():
 
 def publish_sprinkled():
     message = {
-        'device': 'MBBSBG',
+        'device': DEVICE_UUID,
         'type': 'sprinkle',
         'code': 'Star Wars'
     }
@@ -45,8 +47,8 @@ def publish_sprinkled():
 
 def receive_sprinkle_schedule():
     def mqtt_on_connect(client, *args):
-        client.subscribe(topic=mqtt_sprinkle_topic.format('MBBSBG'))
-        print('subscribed to {}'.format(mqtt_sprinkle_topic.format('MBBSBG')))
+        client.subscribe(topic=mqtt_sprinkle_topic.format(DEVICE_UUID))
+        print('subscribed to {}'.format(mqtt_sprinkle_topic.format(DEVICE_UUID)))
         
     def mqtt_on_message(client, userdata, message):
         payload = message.payload.decode('utf-8')
@@ -55,7 +57,7 @@ def receive_sprinkle_schedule():
         actions = body['actions'][0]
         response_payload = {
             'device': body['device'],
-            'code': actions['code'],
+            'code': actions.get('code'),
             'action': actions['action']
         }
         print('response')

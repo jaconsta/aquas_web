@@ -11,9 +11,8 @@ def process_heartbeats(mqtt_body):
     device = Device.objects.get(unique_id=device_code)
 
     beat_options = [
-        DeviceHeartbeat.SPRINKLE_OK,
-        DeviceHeartbeat.SPRINKLE_ERROR,
-        DeviceHeartbeat.HEARTBEAT
+        DeviceHeartbeat.HEARTBEAT,
+        DeviceHeartbeat.DEVICE_ON,
     ]
 
     connection_status = mqtt_body.get('type')

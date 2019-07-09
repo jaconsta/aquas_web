@@ -22,7 +22,7 @@ def water_now(device):
 
     try:
         mqtt_publish.single(
-            topic='/pomelo/water/{}'.format(device.unique_id),
+            topic=mqtt_sprinkle_topic.format(device.unique_id),
             payload=message,
             hostname=mqtt_host,
             port=mqtt_port,

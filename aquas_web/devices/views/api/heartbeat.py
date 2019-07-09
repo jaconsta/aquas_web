@@ -33,7 +33,7 @@ class DeviceHeartbeatViewSet(GenericViewSet):
         """
         query = self.get_queryset()\
             .filter(device__owner=request.user)\
-            .filter(Q(resolved=True) | Q(connection_status='heartbeat'))\
+            .filter(Q(resolved=True) | Q(connection_status__in=[DeviceHeartbeat.HEARTBEAT, DeviceHeartbeat.DEVICE_ON]))\
             .values('device', 'connection_status')\
             .annotate(connection_time=Max('connection_time'))
         return JsonResponse(list(query), safe=False)
@@ -82,8 +82,8 @@ class DeviceHeartbeatViewSet(GenericViewSet):
         now = datetime.datetime.now()
         progress = now - datetime.timedelta(minutes=10)
         active_count = DeviceHeartbeat.objects\
-            .filter(connection_status='heartbeat', connection_time__gte=progress)\
-            .values('device', 'connection_status')\
+            .filter(connection_status__in=[DeviceHeartbeat.HEARTBEAT, DeviceHeartbeat.DEVICE_ON], connection_time__gte=progress)\
+            .values('device')\
             .annotate(connection_time=Max('connection_time'))\
             .count()
 
