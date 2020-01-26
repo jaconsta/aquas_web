@@ -40,15 +40,3 @@ class DeviceViewSet(ModelViewSet):
         { total_devices: <i>&lt;integer&gt;</i> }
         """
         return JsonResponse({'total_devices': self.get_queryset().count()})
-
-
-# class ListDevices(ReadOnlyModelViewSet):
-#     queryset = Device.objects.all()
-#     serializer_class = DeviceSerializer
-#
-#     def get_queryset(self):
-#         return Device.objects.filter(owner=self.request.user)
-#
-#     @action(detail=False, methods=['get'])
-#     def device_count(self, request, pk=None):
-#         return JsonResponse({'total_devices': self.get_queryset().count()})

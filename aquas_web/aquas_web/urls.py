@@ -15,26 +15,16 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.urls import include, path
-# from rest_framework import routers
 from rest_framework_nested import routers
 
 from aquas_web.swagger import schema_view
-
 from users.views import UserAuthViewSet
 from devices.urls import register_device_urls
-# from devices.views.api.device import DeviceViewSet, ListDevices
-# from devices.views.api.schedule import ScheduleViewSet
-# from devices.views.api.heartbeat import DeviceHeartbeatViewSet
 
-# router = routers.DefaultRouter()
 router = routers.SimpleRouter()
 router.register(r'auth', UserAuthViewSet, base_name='auth')
 
 device_urls = register_device_urls(router)
-# router.register(r'devices', DeviceViewSet)
-# router.register(r'devices_heartbeat', DeviceHeartbeatViewSet)
-# router.register(r'my_devices', ListDevices)
-# router.register(r'devices_sprinkle', ScheduleViewSet)
 
 urlpatterns = [
     # API
