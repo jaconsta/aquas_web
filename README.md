@@ -34,6 +34,10 @@ docker build . -t aquas_web
 Run the container
 ```
 docker run -d -p 8000:8000 --name=aquas_web_dev aquas_web
+
+# or
+
+docker run -d -v '/absolute/path/to/your/aquas_web/aquas_web:/app/' -p 8000:8000 --name=aquas_web_dev jaconsta/aquas_web:latest
 ```
 
 Start / Stop container

@@ -15,25 +15,31 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.urls import include, path
-from rest_framework import routers
+# from rest_framework import routers
+from rest_framework_nested import routers
 
 from aquas_web.swagger import schema_view
 
 from users.views import UserAuthViewSet
-from devices.views.api.device import DeviceViewSet, ListDevices
-from devices.views.api.schedule import ScheduleViewSet
-from devices.views.api.heartbeat import DeviceHeartbeatViewSet
+from devices.urls import register_device_urls
+# from devices.views.api.device import DeviceViewSet, ListDevices
+# from devices.views.api.schedule import ScheduleViewSet
+# from devices.views.api.heartbeat import DeviceHeartbeatViewSet
 
-router = routers.DefaultRouter()
+# router = routers.DefaultRouter()
+router = routers.SimpleRouter()
 router.register(r'auth', UserAuthViewSet, base_name='auth')
-router.register(r'devices', DeviceViewSet)
-router.register(r'devices_heartbeat', DeviceHeartbeatViewSet)
-router.register(r'my_devices', ListDevices)
-router.register(r'devices_sprinkle', ScheduleViewSet)
+
+device_urls = register_device_urls(router)
+# router.register(r'devices', DeviceViewSet)
+# router.register(r'devices_heartbeat', DeviceHeartbeatViewSet)
+# router.register(r'my_devices', ListDevices)
+# router.register(r'devices_sprinkle', ScheduleViewSet)
 
 urlpatterns = [
     # API
     url(r'^api/', include(router.urls)),
+    *device_urls,
     # Swagger / OpenAPI docs
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

@@ -6,6 +6,7 @@ from devices.utils import id_generator
 
 class Device(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    # Device code for identification and the one it listens to.
     unique_id = models.CharField(max_length=50, unique=True)
 
     # Friendly name

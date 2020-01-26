@@ -9,6 +9,9 @@ from devices.models import Device
 
 
 class DeviceViewSet(ModelViewSet):
+    """
+    General information regarding to the user devices.
+    """
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
 
@@ -27,18 +30,25 @@ class DeviceViewSet(ModelViewSet):
         return JsonResponse({'status': 'device created'}, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['get'])
-    def device_count(self, request):
-        """ This one is an effort to overWrite ListDevices """
+    def count(self, request):
+        """
+        Get the count of all the user owned devices.
+        <br />
+        This one is an effort to overWrite ListDevices
+        <br />
+        <b>Response structure</b><br />
+        { total_devices: <i>&lt;integer&gt;</i> }
+        """
         return JsonResponse({'total_devices': self.get_queryset().count()})
 
 
-class ListDevices(ReadOnlyModelViewSet):
-    queryset = Device.objects.all()
-    serializer_class = DeviceSerializer
-
-    def get_queryset(self):
-        return Device.objects.filter(owner=self.request.user)
-
-    @action(detail=False, methods=['get'])
-    def device_count(self, request, pk=None):
-        return JsonResponse({'total_devices': self.get_queryset().count()})
+# class ListDevices(ReadOnlyModelViewSet):
+#     queryset = Device.objects.all()
+#     serializer_class = DeviceSerializer
+#
+#     def get_queryset(self):
+#         return Device.objects.filter(owner=self.request.user)
+#
+#     @action(detail=False, methods=['get'])
+#     def device_count(self, request, pk=None):
+#         return JsonResponse({'total_devices': self.get_queryset().count()})
