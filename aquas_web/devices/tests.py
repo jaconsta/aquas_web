@@ -60,7 +60,7 @@ class TestScheduleDevice(APITestCase):
         device.save()
 
         # Need to make work devices/id/sprinkle
-        url = '/api/devices_sprinkle/'.format(device.id)
+        url = '/api/devices/{}/sprinkle/'.format(device.id)
         sprinkle_body = {
             'monday': True,
             'tuesday': True,
@@ -92,7 +92,7 @@ class TestScheduleDevice(APITestCase):
         device.save()
 
         # Need to make work devices/id/sprinkle
-        url = '/api/devices_sprinkle/'.format(device.id)
+        url = '/api/devices/{}/sprinkle/'.format(device.id)
         sprinkle_body = {
         }
 
@@ -200,6 +200,3 @@ class TestSprinkleScheduleOperations(APITestCase):
         next_schedule = hello.when_should_sprinkle_next()
         expected_schedule = datetime(2019, 2, 4, 10, 12, 0)
         self.assertEqual(next_schedule, expected_schedule)
-
-
-
